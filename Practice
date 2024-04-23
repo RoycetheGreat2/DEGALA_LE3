@@ -1,0 +1,404 @@
+accounts = {}
+movie_dict = ["Harry Potter", "Sword Art Online: Ordinal Scale", "Snow White"]
+admin_account = {'Username': 'royce0412', 'Password': 'royce04123456'}
+
+def login_account():
+    print(" ")
+    print("=" * 50)
+
+    while True:
+        print("Enter '0' in username to return")
+
+        user_input = input("Enter your username: ")
+        if user_input == '0':
+            main_menu()
+            break
+
+        if user_input in accounts:
+            if user_input != 0:
+                password_input = input("Enter your password: ")
+                if password_input == accounts[user_input]['Password']:
+                    user_menu(user_input)
+                    break
+                else:
+                    print(" ")
+                    print("=" * 50)
+                    print("Invalid password.")
+
+        else:
+            print(" ")
+            print("=" * 50)
+            print("Invalid username.")
+            
+
+def user_menu(user_input):
+    print(" ")
+    print("=" * 50)
+    print("1. Check available movies")
+    print("2. Rent a movie")
+    print("3. Return a movie")
+    print("4. Check rented movies")
+    print("5. Log out")
+    user_menu_choice = input("Choice: ")
+
+    try:
+        if user_menu_choice == "1":
+            print(" ")
+            print("Available movies:")
+            print(movie_dict)
+            user_menu(user_input)
+
+        elif user_menu_choice == "2":
+            movie_rent(user_input)
+
+        elif user_menu_choice == "3":
+            movie_return(user_input)
+        
+        elif user_menu_choice == "4":
+            if 'Rented Movies' in accounts[user_input]:
+                print(accounts[user_input]['Rented Movies'])
+            else:
+                print("No movies rented.")
+            user_menu(user_input)
+
+        elif user_menu_choice == "5":
+            main_menu()
+        
+        else:
+            raise ValueError("Invalid choice. Please enter a number from 1 to 5.")
+
+    except ValueError as e:
+        print("Error:", e)
+        user_menu(user_input)
+
+def movie_rent(user_input):
+        print(" ")
+        print("=" * 50)
+        rented_movie = input("Enter the name of the movie: ")
+        if rented_movie in movie_dict:
+            if 'Rented Movies' not in accounts[user_input]:
+                accounts[user_input]['Rented Movies'] = []
+                accounts[user_input]['Rented Movies'].append(rented_movie)
+                
+            else: 
+                accounts[user_input]['Rented Movies'].append(rented_movie)
+
+            print("Movie added successfuly")
+
+            movie_dict.remove(rented_movie)
+
+        else:
+            print("Movie not available.")
+        
+        user_menu(user_input)
+
+def movie_return(user_input):
+    print(" ")
+    print("=" * 50)
+    if 'Rented Movies' in accounts[user_input]:
+        print("Press 0 to go to the user menu")
+        print("Which movie should you return?")
+        print(" ")
+        print(accounts[user_input]['Rented Movies'])
+        print(" ")
+        movie_to_return = input("Enter the name of the movie to return: ")
+
+        if movie_to_return in accounts[user_input]['Rented Movies']:
+            movie_dict.append(movie_to_return)
+            accounts[user_input]['Rented Movies'].remove(movie_to_return)
+
+            print("Movie returned successfully.")
+        else:
+            print("You have not rented this movie.")
+
+    else:
+        print("You haven't rented any movies yet.")   
+
+    user_menu(user_input)
+
+def admin_menu():
+    print(" ")
+    print("=" * 50)
+    print("1. Add a movie")
+    print("2. Remove a movie")
+    print("3. Log out")
+    print("4. Check movie list")
+    admin_choice = input("Choice:")
+    try:
+        if admin_choice == "1":
+            admin_add()
+             
+        elif admin_choice == "2":
+            admin_remove()
+            
+        elif admin_choice == "3":
+            main_menu()
+        
+        elif admin_choice == "4":
+            print(movie_dict)
+            admin_menu()
+                    
+        else:
+            raise ValueError("Invalid choice. Please enter a number from 1 to 4")
+    except ValueError as c:
+        print("Error:", c)
+        admin_menu()
+
+def admin_login():
+    print(" ")
+    print("=" * 50)
+
+    while True:    
+        print("Enter 0 to go back")
+        print("Admin Login")
+        admin_username = input("Username: ")
+        if admin_username == "0":
+            main_menu()
+            break
+
+        if admin_username == admin_account['Username']:
+            if admin_username != "0":
+                admin_password = input("Password: ")
+                if admin_password == admin_account['Password']:
+                    print(" ")
+                    print("Login Successful")
+                    admin_menu()
+                    break
+                else:
+                    print("Invalid password.")
+                    print(" ")
+                    print("=" * 50)
+                    print(" ")
+                    
+        else:
+            print("Invalid Username.")
+            print(" ")
+            print("=" * 50)
+            print(" ")
+
+
+def admin_add():
+    print(" ")
+    print("=" * 50)
+    print("Enter 0 to go back")
+    print("Add your desired movie")
+    print(" ")
+    admin_add_input = input("Movie name: ")
+    print(" ")
+    movie_dict.append(admin_add_input)
+
+    print("Movie added successfully.")
+    admin_menu()
+
+def admin_remove():
+    print(" ")
+    print("=" * 50)
+    print("Enter 0 to go back")
+    print("Remove your desired movie")
+    print(" ")
+    admin_add_input = input("Movie name: ")
+    print(" ")
+    movie_dict.remove(admin_add_input)
+
+    print("Movie removed successfully.")
+    admin_menu()
+
+def create_account():
+    print(" ")
+    print("=" * 50)
+    
+    
+    print("Enter 0 in username to return")
+    create_username = input("Enter username: ")
+    if create_username == "0":
+        main_menu()
+        
+
+    create_password = input("Enter password: ")
+
+    account_details = {'Password': create_password, 'Balance': 0}
+
+    accounts[create_username] = account_details
+
+    print("Account created successfully!")
+    main_menu()
+
+def main_menu():
+    print(" ")
+    print("=" * 50)
+    print("Welcome to Movie Rentals")
+    print("1. Login Account")
+    print("2. Login with Admin")
+    print("3. Create Account")
+    print("4. Check Accounts")
+    print("5. Exit")
+    main_menu_choice = input("Choice: ")
+
+    try:
+        if main_menu_choice == "1":
+            login_account()
+
+        elif main_menu_choice == "2":
+            admin_login()
+
+        elif main_menu_choice == "3":
+            create_account()
+
+        elif main_menu_choice == "4":
+            print(accounts)
+            main_menu()
+        
+        elif main_menu_choice == "5":
+            exit()
+
+        else:
+            raise ValueError("Invalid choice. Please enter a number from 1 to 5.")
+        
+    except ValueError as a:
+        print("Error:", a)
+        main_menu()
+
+main_menu()
+
+Changes:
+
+def user_menu(user_input):
+    print(" ")
+    print("=" * 50)
+    print("1. Check available movies and prices")
+    print("2. Rent a movie")
+    print("3. Return a movie")
+    print("4. Check rented movies")
+    print("5. Add balance")
+    print("6. Log out")
+    user_menu_choice = input("Choice: ")
+
+    try:
+        if user_menu_choice == "1":
+            print_available_movies()
+            user_menu(user_input)
+
+        elif user_menu_choice == "2":
+            movie_rent(user_input)
+
+        elif user_menu_choice == "3":
+            movie_return(user_input)
+        
+        elif user_menu_choice == "4":
+            print_rented_movies(user_input)
+            user_menu(user_input)
+        
+        elif user_menu_choice == "5":
+            add_balance(user_input)
+        
+        elif user_menu_choice == "6":
+            main_menu()
+        
+        else:
+            raise ValueError("Invalid choice. Please enter a number from 1 to 6.")
+
+    except ValueError as e:
+        print("Error:", e)
+        user_menu(user_input)
+
+def print_available_movies():
+    print(" ")
+    print("Available movies and prices:")
+    for movie in movie_dict:
+        print(f"{movie}: ${movie_prices[movie]}")
+
+def print_rented_movies(user_input):
+    if 'Rented Movies' in accounts[user_input]:
+        print("Your rented movies:")
+        for movie in accounts[user_input]['Rented Movies']:
+            print(movie)
+    else:
+        print("No movies rented.")
+
+def add_balance(user_input):
+    print(" ")
+    print("Add Balance")
+    amount = float(input("Enter the amount to add: "))
+    if amount > 0:
+        accounts[user_input]['Balance'] += amount
+        print("Balance added successfully.")
+        print(f"Current balance: ${accounts[user_input]['Balance']}")
+    else:
+        print("Invalid amount. Please enter a positive value.")
+    user_menu(user_input)
+
+# Define movie prices
+movie_prices = {
+    "Harry Potter": 5.99,
+    "Sword Art Online: Ordinal Scale": 6.99,
+    "Snow White": 4.99
+}
+```
+
+To implement the functionality for the admin user to display all movies, including their rental status and who they are rented to, you can update the `admin_menu` function and create a new function to print this information. Here's how you can do it:
+
+```python
+def admin_menu():
+    print(" ")
+    print("=" * 50)
+    print("1. Add a movie")
+    print("2. Remove a movie")
+    print("3. Show all movies with rental status")
+    print("4. Log out")
+    admin_choice = input("Choice:")
+    try:
+        if admin_choice == "1":
+            admin_add()
+             
+        elif admin_choice == "2":
+            admin_remove()
+            
+        elif admin_choice == "3":
+            show_all_movies()
+        
+        elif admin_choice == "4":
+            main_menu()
+                    
+        else:
+            raise ValueError("Invalid choice. Please enter a number from 1 to 4")
+    except ValueError as c:
+        print("Error:", c)
+        admin_menu()
+
+def show_all_movies():
+    print(" ")
+    print("All Movies with Rental Status:")
+    for movie in movie_dict:
+        if movie in rented_movies.values():
+            rented_to = [user for user, m in rented_movies.items() if m == movie][0]
+            print(f"{movie} - Rented to: {rented_to}")
+        else:
+            print(f"{movie} - Not rented")
+
+# Initialize a dictionary to track rented movies and users
+rented_movies = {}
+
+# Modify the movie_rent function to update rented_movies
+def movie_rent(user_input):
+    print(" ")
+    print("=" * 50)
+    rented_movie = input("Enter the name of the movie: ")
+    if rented_movie in movie_dict:
+        if 'Rented Movies' not in accounts[user_input]:
+            accounts[user_input]['Rented Movies'] = []
+            accounts[user_input]['Rented Movies'].append(rented_movie)
+                
+        else: 
+            accounts[user_input]['Rented Movies'].append(rented_movie)
+
+        print("Movie added successfuly")
+
+        movie_dict.remove(rented_movie)
+        rented_movies[user_input] = rented_movie
+
+    else:
+        print("Movie not available.")
+        
+    user_menu(user_input)
+
+
